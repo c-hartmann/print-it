@@ -1,0 +1,73 @@
+#
+# 	servicemenus-print-it.desktop Version 0.1.0
+# 	Copyright (C) 2022 Christian Hartmann <hartmann.christian@gmail.com>
+#
+#       SPDX-FileCopyrightText: 2022 Christian Hartmann <hartmann.christian@gmail.com>
+#
+#       SPDX-License-Identifier: LicenseRef-KDE-Accepted-GPL
+#
+#       This program is free software; you can redistribute it and/or
+#       modify it under the terms of the GNU General Public License as
+#       published by the Free Software Foundation; either version 3 of
+#       the license or (at your option) at any later version that is
+#       accepted by the membership of KDE e.V. (or its successor
+#       approved by the membership of KDE e.V.), which shall act as a
+#       proxy as defined in Section 14 of version 3 of the license.
+#
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#       GNU General Public License for more details.
+#
+
+[Desktop Entry]
+Type=Service
+MimeType=application/pdf;application/rtf;application/x-desktop;image/jpeg;image/jpg;image/jp2;image/jpx;image/png;image/tiff;image/webp;image/gif;text/plain;text/css;text/html;text/rtf;text/csv;text/markdown;application/vnd.oasis.opendocument.text;application/vnd.oasis.opendocument.spreadsheet;application/vnd.oasis.opendocument.presentation;application/vnd.oasis.opendocument.graphics;application/vnd.oasis.opendocument.formula;application/msword;application/msexcel;application/excel;application/mspowerpoint;application/vnd.openxmlformats-officedocument.wordprocessingml.document;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;application/vnd.openxmlformats-officedocument.presentationml.presentation;application/vnd.ms-word;application/vnd.ms-excel;application/vnd.ms-powerpoint;
+Icon=document-print
+Actions=PrintItQuiet;
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+
+[Desktop Action PrintItQuiet]
+Name=Print
+Name[ar]=اطبع
+Name[az]=Çap
+Name[ca]=Impressió
+Name[cs]=Tisk
+Name[da]=Udskriv
+Name[de]=Drucken
+Name[el]=Εκτύπωση
+Name[es]=Imprimir
+Name[et]=Trükkimine
+Name[eu]=Inprimatu
+Name[fi]=Tulosta
+Name[fr]=Imprimer
+Name[gl]=Imprimir
+Name[hi]=छापें
+Name[hu]=Nyomtatás
+Name[ia]=Imprime
+Name[id]=Cetak
+Name[is]=Prenta
+Name[it]=Stampa
+Name[ko]=인쇄
+Name[lt]=Spausdinti
+Name[lv]=Drukāt
+Name[nb]=Skriv ut
+Name[nl]=Afdrukken
+Name[nn]=Skriv ut
+Name[pa]=ਛਾਪੋ
+Name[pl]=Wydrukuj
+Name[pt]=Imprimir
+Name[ro]=Tipărește
+Name[ru]=Печать
+Name[se]=Čálit
+Name[sk]=Tlačiť
+Name[sl]=Natisni
+Name[sr]=Штампање
+Name[sv]=Skriv ut
+Name[ta]=அச்சிடு
+Name[tr]=Yazdır
+Name[uk]=Друк
+Name[zh_CN]=打印
+Name[zh_TW]=列印
+Icon=document-print
+Exec=IFS=:; for dir in $(kf5-config --path services); do command="$dir/ServiceMenus/print-it.sh"; if [ -x "$command" ]; then $command "%f"; break; else kdoalog --error "command not found: print-it.sh"; fi; done
