@@ -25,6 +25,7 @@ Name=Print It (Files)
 Type=Service
 MimeType=application/pdf;application/rtf;application/x-desktop;image/jpeg;image/jpg;image/jp2;image/jpx;image/png;image/tiff;image/webp;image/gif;text/plain;text/css;text/html;text/rtf;text/csv;text/markdown;application/vnd.oasis.opendocument.text;application/vnd.oasis.opendocument.spreadsheet;application/vnd.oasis.opendocument.presentation;application/vnd.oasis.opendocument.graphics;application/vnd.oasis.opendocument.formula;application/msword;application/msexcel;application/excel;application/mspowerpoint;application/vnd.openxmlformats-officedocument.wordprocessingml.document;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;application/vnd.openxmlformats-officedocument.presentationml.presentation;application/vnd.ms-word;application/vnd.ms-excel;application/vnd.ms-powerpoint;
 Icon=document-print
+InitialPreference=50
 Actions=PrintItFiles;
 X-KDE-ServiceTypes=KonqPopupMenu/Plugin
 

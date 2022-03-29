@@ -25,6 +25,7 @@ Name=Print It (Directories)
 Type=Service
 MimeType=inode/directory;
 Icon=document-print
+InitialPreference=50
 Actions=PrintItDirectory;
 X-KDE-ServiceTypes=KonqPopupMenu/Plugin
 

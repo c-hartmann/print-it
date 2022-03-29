@@ -137,8 +137,9 @@ _init_libreoffice ()
     [[ -n "${_soffice}" ]] && printf '%s' "${_soffice}" && return
     _libreoffice_fp="$(flatpak search --columns=application org.libreoffice.LibreOffice | head -1)"
     [[ -n "${_libreoffice_fp}" ]] && printf '%s' "flatpak run org.libreoffice.LibreOffice" && return
-    _libreoffice_snap="$(snap search libreoffice)"
-    [[ -n "${_libreoffice_snap}" ]] && printf '%s' "/snap/bin/libreoffice" && return
+    ### if installed via snap, we only have to check for the executable
+    _libreoffice_snap="/snap/bin/libreoffice"
+    [[ -x "${_libreoffice_snap}" ]] && printf '%s' "${_libreoffice_snap}" && return
 }
 
 
@@ -201,9 +202,6 @@ _main ()
 # 	local stdin=0
 # 	_init_run_mode $stdin
 
-	### get path to binary
-    _libreoffice=$(_init_libreoffice)
-
     _check_first_run || _canceled_exit
 
     ### altough this goes via %f it should be able to handle %F as well
@@ -218,7 +216,7 @@ _main ()
                 _enscript="$(which enscript)"
                 if [[ -n "$_enscript" ]]; then
                     _dirname="$(basename "${_file}")" # remove trailing slash
-                    ls -l -g --time-style=long-iso --human-readable "$_file" | $_enscript --header="/${_dirname}/|\$% / \$=|%D %C" --font='Courier@9/10' --output=- | lp # --pretty-print=de_DE.UTF-8 ?
+                    ls -l -o -g --time-style=long-iso --human-readable "$_file" | $_enscript --header="/${_dirname}/|\$% / \$=|%D %C" --font='Courier@9/10' --output=- | lp # --pretty-print=de_DE.UTF-8 ?
                 fi
             ;;
             text/html)
@@ -269,7 +267,31 @@ _main ()
                 lp "$_file"
                 continue
             ;;
-            application/x-shellscript | application/x-desktop:org)
+            application/rtf | \
+            application/vnd.oasis.opendocument.text | \
+            application/vnd.oasis.opendocument.spreadsheet | \
+            application/vnd.oasis.opendocument.presentation | \
+            application/vnd.oasis.opendocument.text | \
+            application/vnd.oasis.opendocument.spreadsheet | \
+            application/vnd.oasis.opendocument.presentation | \
+            application/vnd.oasis.opendocument.graphics | \
+            application/vnd.oasis.opendocument.formula | \
+            application/msword | \
+            application/msexcel | \
+            application/excel | \
+            application/mspowerpoint | \
+            application/vnd.openxmlformats-officedocument.wordprocessingml.document | \
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet | \
+            application/vnd.openxmlformats-officedocument.presentationml.presentation | \
+            application/vnd.ms-word | \
+            application/vnd.ms-excel | \
+            application/vnd.ms-powerpoint \
+            )
+                ### get path to binary
+                _libreoffice=$(_init_libreoffice)
+                $_libreoffice --headless -p "$_file" # --writer? nope. --headless is also not required
+            ;;
+            application/x-shellscript | application/x-desktop)
                 _enscript="$(which enscript)"
                 _a2ps="$(which a2ps)"
                 _e2ps="$(which e2ps)" # can handle unicode?
