@@ -219,23 +219,6 @@ _main ()
                     ls -l -o -g --time-style=long-iso --human-readable "$_file" | $_enscript --header="/${_dirname}/|\$% / \$=|%D %C" --font='Courier@9/10' --output=- | lp # --pretty-print=de_DE.UTF-8 ?
                 fi
             ;;
-            text/html)
-                ### treat this as source code or try to render this?
-                kdialog --warning 'html support is not yet implemented. sorry'
-                continue
-            ;;
-            text/markdown)
-                _markdown="$(which markdown)"
-                _html2ps="$(which html2ps)"
-                [[ -n "$_markdown" ]] || kdialog --error 'markdown(1) not installed. must quit'
-                [[ -n "$_html2ps" ]] || kdialog --error 'html2ps(1) not installed. must quit'
-                $_markdown "$_file" | iconv --from 'UTF-8' --to 'ISO-8859-1' | $_html2ps | lp
-                continue
-            ;;
-            text/*)
-                lp "$_file"
-                continue
-            ;;
             image/svg+xml)
                 ### any command line utility?
                 ### convert(1) might do the job with the help of librsvg2-bin
@@ -291,7 +274,26 @@ _main ()
                 _libreoffice=$(_init_libreoffice)
                 $_libreoffice --headless -p "$_file" # --writer? nope. --headless is also not required
             ;;
-            application/x-shellscript | application/x-desktop)
+            text/plain | \
+            application/x-shellscript | \
+            application/x-perl | \
+            application/x-python | \
+            text/x-python | \
+            text/x-qml | \
+            text/x-csrc | \
+            text/x-c++src | \
+            text/x-chdr | \
+            text/x-makefile | \
+            text/x-readme | \
+            text/x-cmake | \
+            text/x-patch | \
+            text/x-log | \
+            application/json | \
+            application/javascript | \
+            application/x-yaml | \
+            application/x-xml | \
+            application/x-php | \
+            application/x-desktop)
                 _enscript="$(which enscript)"
                 _a2ps="$(which a2ps)"
                 _e2ps="$(which e2ps)" # can handle unicode?
@@ -307,6 +309,23 @@ _main ()
                 fi
                 continue
             ;;
+            text/html)
+                ### treat this as source code or try to render this?
+                kdialog --warning 'html support is not yet implemented. sorry'
+                continue
+            ;;
+            text/markdown)
+                _markdown="$(which markdown)"
+                _html2ps="$(which html2ps)"
+                [[ -n "$_markdown" ]] || kdialog --error 'markdown(1) not installed. must quit'
+                [[ -n "$_html2ps" ]] || kdialog --error 'html2ps(1) not installed. must quit'
+                $_markdown "$_file" | iconv --from 'UTF-8' --to 'ISO-8859-1' | $_html2ps | lp
+                continue
+            ;;
+#             text/*)
+#                 lp "$_file"
+#                 continue
+#             ;;
             *)
                 kdialog --error "sorry. support for mimetype not implemented yet: $_mime_type"
                 continue

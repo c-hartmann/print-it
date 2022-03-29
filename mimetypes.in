@@ -16,7 +16,6 @@ image/gif;
 
 application/pdf;
 application/rtf;
-application/x-desktop;
 
 application/vnd.oasis.opendocument.text;
 application/vnd.oasis.opendocument.spreadsheet;
@@ -36,3 +35,23 @@ application/vnd.openxmlformats-officedocument.presentationml.presentation;
 application/vnd.ms-word;
 application/vnd.ms-excel;
 application/vnd.ms-powerpoint;
+
+application/x-shellscript;
+application/x-perl;
+application/x-python;
+text/x-python;
+text/x-qml;
+text/x-csrc;
+text/x-c++src;
+text/x-chdr;
+text/x-makefile;
+text/x-readme;
+text/x-cmake;
+text/x-patch;
+text/x-log;
+application/json;
+application/javascript;
+application/x-yaml;
+application/x-xml;
+application/x-php;
+application/x-desktop;
