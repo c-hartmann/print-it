@@ -24,12 +24,96 @@
 #       GNU General Public License for more details.
 #
 
-### TODO libreoffice
 
 
+### some useful helpers
+MY_PATH="${BASH_SOURCE[0]}"
+MY_FILE="${MY_PATH##*/}"
+MY_NAME="${MY_FILE%%.*}"
+#MY_FIRST_RUN="${MY_PATH}/${MY_NAME}.firstrun"
+MY_FIRST_RUN="${MY_PATH%%.sh}.firstrun"
+MY_CONFIG="${MY_NAME}.config"
 
 ### no arguments? quit!
 (( $# == 0 )) && exit 128
+
+### desktop notifications will vanish after seconds
+notification_timeout=2000
+
+### check if we run first time (diaply dialog until users select no display)
+_check_first_run ()
+{
+#     ### is the $ME.firstrun file still present / delete on explicit user action
+#     if [[ -f "$MY_FIRST_RUN" ]]; then
+#         _message_text=$(cat "$MY_FIRST_RUN")
+        _message_text="Proceed with 'Printing' or 'Cancel' printing this time"
+#         kdialog --yes-label 'Print' --no-label 'Cancel' --warningyesno "$_message_text"
+#         _show_dialog_next='Show this dialog next time'
+#         _hide_dialog_next='Do not show this dialog next time'
+#         choice=$(kdialog --title 'Print It' --ok-label 'Print' --cancel-label 'Cancel' --combobox "$_message_text" "$_show_dialog_next" "$_hide_dialog_next" --default "$_show_dialog_next")
+#         kdialog --title 'Print It' --msgbox "$_message_text" --dontagain "${MY_CONFIG}:first_run"
+        kdialog --title 'Print It' --yes-label 'Print' --no-label 'Cancel' --warningyesno "$_message_text" --dontagain "${MY_CONFIG}:first_run"
+        if (( $? == 0 )); then
+#             if [[ "$choice" == "$_show_dialog_next" ]]; then
+#                 rm "$MY_FIRST_RUN"
+#             fi
+            return 0
+        else
+            ### bug or feature?  kdialog remembers OK or CANCEL last decision
+            ### when do not display again option is cheched. so if user(in)
+            ### checks "do not display again" _and_ Cancel the operation,
+            ### kdialog will always return false on every next invocation.
+            ### so we delete config file immediatly on Cancel and ensure
+            ### dialog will pop up on next run.
+            rm ~/.config/"$MY_CONFIG"
+            return 1 # canceled
+        fi
+#     else
+#         return 0
+#     fi
+}
+
+### _notify
+### wrapper that respects gui or cli mode
+_notify ()
+{
+# 	$gui && notify-send --app-name="${MY_TITLE}" --icon=virtualbox --expire-time=$notification_timeout "$@"
+# 	$cli && printf "\n$@\n" >&2
+	notify-send --app-name="${MY_TITLE}" --icon=document-print --expire-time=$notification_timeout "$@"
+}
+
+### _error_exit
+### even more simple error handling
+_error_exit ()
+{
+	local error_str="$(gettext "ERROR")"
+	$gui && kdialog --error "$error_str: $*" --ok-label "So Sad"
+	$cli && printf "\n$error_str: $1\n\n" >&2
+	exit ${2:-1}
+}
+
+### _canceled_exit
+_canceled_exit ()
+{
+	_notify "printing canceled"
+	exit 1
+}
+
+### _init_run_mode FD
+### wrapper that sets gui or cli mode from terminal type
+_init_run_mode ()
+{
+	local fd=$1
+	if [[ ! -t $fd ]]; then
+		# running via service menu
+		gui=true
+		cli=false
+	else
+		# running from command line
+		gui=false
+		cli=true
+	fi
+}
 
 ### find identify(1)
 _init_identify ()
@@ -113,14 +197,30 @@ _get_image_orientation () # <file>
 ### main function
 _main ()
 {
-    ### get path to binary
+# 	# if running inside a terminal, stdin is connected to this terminal
+# 	local stdin=0
+# 	_init_run_mode $stdin
+
+	### get path to binary
     _libreoffice=$(_init_libreoffice)
 
+    _check_first_run || _canceled_exit
+
     ### altough this goes via %f it should be able to handle %F as well
+    ### TODO rename _file to something more generic that includes directories. _node?
+
     for _file in "$@"; do
         _mime_type="$(_get_mime_type "$_file")"
         printf '%s\n' "file:$_file" "mime:$_mime_type" >&2
         case "$_mime_type" in
+            inode/directory)
+                kdialog --combobox "$_file"
+                _enscript="$(which enscript)"
+                if [[ -n "$_enscript" ]]; then
+                    _dirname="$(basename "${_file}")" # remove trailing slash
+                    ls -l -g --time-style=long-iso --human-readable "$_file" | $_enscript --header="/${_dirname}/|\$% / \$=|%D %C" --font='Courier@9/10' --output=- | lp # --pretty-print=de_DE.UTF-8 ?
+                fi
+            ;;
             text/html)
                 ### treat this as source code or try to render this?
                 kdialog --warning 'html support is not yet implemented. sorry'
