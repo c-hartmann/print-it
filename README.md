@@ -14,15 +14,15 @@ Starting with 0.1.0 there is support for these document types:
 * Images
 * Markdown texts (as this README)
 * Office Formats (templates not included)
-* Directory Listings
+* Directory Listings (disable via Context Menu Configuration)
 
 Probably this does not even cover all known source file types in KDE developement.
 
-To avoid unexspected results this extension allows the allows printing of
+To avoid unexspected results this extension allows the printing of
 explicitly white listed file types.
 
 There is mimetypes.in file in the source, that might give you a glimpse of
-supported file types. Fell free to contact, if something is missing.
+supported file types. Feel free to contact, if something is missing.
 
 
 ## Start Using it

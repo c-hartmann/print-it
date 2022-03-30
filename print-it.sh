@@ -219,12 +219,12 @@ _main ()
                     ls -l -o -g --time-style=long-iso --human-readable "$_file" | $_enscript --header="/${_dirname}/|\$% / \$=|%D %C" --font='Courier@9/10' --output=- | lp # --pretty-print=de_DE.UTF-8 ?
                 fi
             ;;
-            image/svg+xml)
+            image/svg+xml | image/x-xcf | image/vnd.adobe.photoshop)
                 ### any command line utility?
                 ### convert(1) might do the job with the help of librsvg2-bin
                 ### inkscape --without-gui --export-pdf=/dev/stdout foo.svg | lp
                 ### orientation is relevant here as well
-                kdialog --warning 'svg support is not yet implemented. sorry'
+                kdialog --error "sorry. support for mimetype not implemented yet: $_mime_type"
                 continue
             ;;
             image/*)
@@ -275,21 +275,50 @@ _main ()
                 $_libreoffice --headless -p "$_file" # --writer? nope. --headless is also not required
             ;;
             text/plain | \
-            application/x-shellscript | \
-            application/x-perl | \
-            application/x-python | \
+            text/css | \
+            text/javascript | \
+            text/ecmascript | \
+            text/xml | \
             text/x-python | \
             text/x-qml | \
-            text/x-csrc | \
-            text/x-c++src | \
+            text/x-c | \
             text/x-chdr | \
+            text/x-csrc | \
+            text/x-c++hdr | \
+            text/x-c++src | \
             text/x-makefile | \
             text/x-readme | \
             text/x-cmake | \
             text/x-patch | \
             text/x-log | \
+            text/x-asciidoc | \
+            text/x-awk | \
+            text/x-clojure | \
+            text/x-coffeescript | \
+            text/x-dtd | \
+            text/x-go | \
+            text/x-ini | \
+            text/x-java | \
+            text/x-java-properties | \
+            text/x-java-source | \
+            text/x-lua | \
+            text/x-perl | \
+            text/x-php | \
+            text/x-ruby | \
+            text/x-sql | \
+            text/x-tcl | \
+            text/x-tex | \
+            text/x-yaml | \
+            text/x-dockerfile | \
             application/json | \
+            application/xml | \
+            application/ecmascript | \
             application/javascript | \
+            application/x-ecmascript | \
+            application/x-javascript | \
+            application/x-shellscript | \
+            application/x-perl | \
+            application/x-python | \
             application/x-yaml | \
             application/x-xml | \
             application/x-php | \
@@ -311,10 +340,10 @@ _main ()
             ;;
             text/html)
                 ### treat this as source code or try to render this?
-                kdialog --warning 'html support is not yet implemented. sorry'
+                kdialog --error "sorry. support for mimetype not implemented yet: $_mime_type"
                 continue
             ;;
-            text/markdown)
+            text/markdown | text/x-web-markdown)
                 _markdown="$(which markdown)"
                 _html2ps="$(which html2ps)"
                 [[ -n "$_markdown" ]] || kdialog --error 'markdown(1) not installed. must quit'
