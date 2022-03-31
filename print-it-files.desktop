@@ -72,4 +72,4 @@ Name[uk]=Друк
 Name[zh_CN]=打印
 Name[zh_TW]=列印
 Icon=document-print
-Exec=IFS=:; for dir in $(kf5-config --path services); do command="$dir/ServiceMenus/print-it.sh"; if [ -x "$command" ]; then $command "%f"; break; else kdoalog --error "command not found: print-it.sh"; fi; done
+Exec=IFS=:; for dir in $(kf5-config --path services); do command="$dir/ServiceMenus/print-it.sh"; if [ -x "$command" ]; then $command "%f"; break; else kdoalog --error "command not found: $command"; fi; done

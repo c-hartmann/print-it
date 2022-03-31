@@ -33,4 +33,4 @@ X-KDE-ServiceTypes=KonqPopupMenu/Plugin
 Name=Print (Directory Listing)
 Name[de]=Drucken (Verzeichnis Liste)
 Icon=document-print
-Exec=IFS=:; for dir in $(kf5-config --path services); do command="$dir/ServiceMenus/print-it.sh"; if [ -x "$command" ]; then $command "%f"; break; else kdoalog --error "command not found: print-it.sh"; fi; done
+Exec=IFS=:; for dir in $(kf5-config --path services); do command="$dir/ServiceMenus/print-it.sh"; if [ -x "$command" ]; then $command "%f"; break; else kdoalog --error "command not found: $command"; fi; done
