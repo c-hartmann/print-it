@@ -274,6 +274,8 @@ _main ()
                 _libreoffice=$(_init_libreoffice)
                 $_libreoffice --headless -p "$_file" # --writer? nope. --headless is also not required
             ;;
+            ### cups has a -o prettyprint option on it's own,
+            ### but we use enscript(1) in the first place
             text/plain | \
             text/css | \
             text/javascript | \
@@ -334,7 +336,7 @@ _main ()
                 elif [[ -n "$_e2ps" ]]; then
                     $_e2ps --output=- "$_file" | lp # 1005 untested!
                 else
-                    lp "$_file" # very basic fallback
+                    lp -o prettyprint "$_file" # very basic fallback
                 fi
                 continue
             ;;
